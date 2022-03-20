@@ -17,10 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,7 +43,8 @@ class MultipartdemoApplicationTests {
 
 		Account account2 = Account.builder()
 			.accountData(AccountData.builder().productName("CREDIT CARD2")
-			.accountBalance(List.of(AccountBalance.builder().balance(15.0).build(), AccountBalance.builder().balance(30.0).build())).build())
+			.accountBalance(List.of(AccountBalance.builder().balance(15.0).build(), AccountBalance.builder().balance(30.0).build()))
+			.build())
 			.accountId("2")
 			.dataItems(List.of(
 					DataItem.builder().amount(100.0).description("This is a test 12")
@@ -89,15 +87,15 @@ class MultipartdemoApplicationTests {
 		builder.part("metadata", Map.of("key", "value"));
 		builder.part("file", new InputStreamResource(new ByteArrayInputStream(sb.toString().getBytes()))).filename("csv");
 
-		String r = WebClient.builder().build()
-			.post()
-			.uri("http://localhost:8080/upload")
-			.contentType(MediaType.MULTIPART_FORM_DATA)
-			.body(BodyInserters.fromMultipartData(builder.build()))
-			.retrieve()
-			.bodyToMono(String.class)
-			.block();
+		// String r = WebClient.builder().build()
+		// 	.post()
+		// 	.uri("http://localhost:8080/upload")
+		// 	.contentType(MediaType.MULTIPART_FORM_DATA)
+		// 	.body(BodyInserters.fromMultipartData(builder.build()))
+		// 	.retrieve()
+		// 	.bodyToMono(String.class)
+		// 	.block();
 
-		log.info("\nfrom server\n{}", r);
+		// log.info("\nfrom server\n{}", r);
 	}
 }

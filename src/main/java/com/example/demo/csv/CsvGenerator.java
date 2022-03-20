@@ -15,6 +15,7 @@ import java.util.stream.StreamSupport;
 
 import com.codepoetics.protonpack.StreamUtils;
 import com.example.demo.CurrentIterator;
+import com.example.domain.DataItem;
 
 import org.springframework.util.ClassUtils;
 
@@ -72,16 +73,6 @@ public class CsvGenerator {
 		}, Spliterator.IMMUTABLE), false);
 	}
 
-	private void cleanUpState(CurrentIterator<?> iterator, Field field) {
-		// if we are done with this iterator remove it from the Map and pop from the stack
-		if (!iterator.hasNext()) {
-			iterators.remove(field.getName());
-		}
-		if (!stack.peek().hasNext()) {
-			stack.pop();
-		}
-	}
-
 	private void processList(Object o, String[] row, Field field, String path)
 			throws IllegalArgumentException, IllegalAccessException {
 		
@@ -94,21 +85,21 @@ public class CsvGenerator {
 			stack.push(iterator);
 		}
 		
-		// if we are done with this iterator remove it from the Map and pop from the stack
-		cleanUpState(iterator, field);
-
 		// are we at the correct level to iterate through this current collection....
 		if (stack.peek() == iterator) {		
 			if (iterator.hasNext()) {
-				reflect(iterator.next(), row, path);				
+				reflect(iterator.next(), row, path);	
 			}
-			
-			// if we are done with this iterator remove it from the Map and pop from the stack
-			cleanUpState(iterator, field);
 
 		// ... or do we need to iterate thorugh the childeren first?
 		} else if (iterator.getCurrent() != null) {
 			reflect(iterator.getCurrent(), row, path);
+		}
+
+		// pop/remove expired iterator... 
+		if (stack.peek() == iterator && !iterator.hasNext()) {
+			iterators.remove(field.getName());
+			stack.pop();
 		}
 	}
 
