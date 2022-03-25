@@ -16,4 +16,5 @@ public class Account {
         
     private AccountData accountData;
     private List<DataItem> dataItems;
+    private List<OtherData> otherData; 
 }
