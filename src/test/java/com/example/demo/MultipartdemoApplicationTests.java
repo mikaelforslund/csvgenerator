@@ -47,8 +47,8 @@ class MultipartdemoApplicationTests {
 
 		Account account2 = Account.builder()
 				.accountData(AccountData.builder().productName("CREDIT CARD2")
-						//.accountBalance(List.of(AccountBalance.builder().balance(15.0).build(),
-						//		AccountBalance.builder().balance(30.0).build()))
+						.accountBalance(List.of(AccountBalance.builder().balance(15.0).build(),
+								AccountBalance.builder().balance(30.0).build()))
 						.build())
 				.accountId("2")
 				.otherData(List.of(OtherData.builder().data("testData21").build(), OtherData.builder().data("testData22").build()))
@@ -61,7 +61,7 @@ class MultipartdemoApplicationTests {
 
 		CdrRequest request = CdrRequest.builder()
 				.consent("CONSENT")
-				.account(List.of(/*account1,*/ account2))
+				.account(List.of(account1, account2))
 				.build();
 
 		List<String> header = List.of("consent", "productName", "accountId", "amount", "description", "transactionId",
@@ -99,7 +99,7 @@ class MultipartdemoApplicationTests {
 
 		Pair<String, Stream<String[]>> rows = generateCsv();
 
-		rows.getRight().forEach(row -> log.info("{}\n", Arrays.asList(row)));
+		rows.getRight().forEach(row -> log.info("{}", Arrays.asList(row)));
 
 		MultipartBodyBuilder builder = new MultipartBodyBuilder();
 		builder.part("methods", "some methods");
